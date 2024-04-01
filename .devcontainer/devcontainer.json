@@ -8,14 +8,17 @@
 	"settings": {
 		"terminal.integrated.shell.linux": "/bin/bash"
 	},
-
+	
+	"postCreateCommand": "pip3 install --user -r requirements.txt",
+	
 	// Add the IDs of extensions you want installed when the container is created.
 	"extensions": [
 		"ms-python.python",
 		"ms-toolsai.vscode-ai",
 		"ms-toolsai.jupyter",
 		"redhat.vscode-yaml",
-		"prompt-flow.prompt-flow"
+		"prompt-flow.prompt-flow",
+		"GitHub.copilot"
 	],
 
 	"runArgs": ["-v", "/var/run/docker.sock:/var/run/docker.sock"]
