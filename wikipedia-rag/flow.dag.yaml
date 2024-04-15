@@ -17,7 +17,6 @@ nodes:
     tool: promptflow.tools.embedding.embedding
   inputs:
     connection: aoai_sweden
-    deployment_name: text-embedding-ada-002
     input: ${inputs.question}
 - name: wikipedia_ai_search
   type: python
@@ -26,9 +25,6 @@ nodes:
     tool: promptflow_vectordb.tool.vector_db_lookup.VectorDBLookup.search
   inputs:
     connection: pt-ai-search
-    index_name: wikipedia-index
-    text_field: ""
-    vector_field: content_vector
     vector: ${Embedding_Q.output}
 - name: post_processing
   type: python

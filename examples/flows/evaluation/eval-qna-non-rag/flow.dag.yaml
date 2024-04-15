@@ -1,4 +1,6 @@
 $schema: https://azuremlschemas.azureedge.net/promptflow/latest/Flow.schema.json
+environment:
+  python_requirements_txt: requirements.txt
 inputs:
   question:
     type: string
@@ -50,14 +52,12 @@ nodes:
     type: code
     path: gpt_coherence_prompt.jinja2
   inputs:
-    deployment_name: gpt-4
+    deployment_name: gpt-3
     temperature: 0
     top_p: 1
-    stop: ""
     max_tokens: 1
     presence_penalty: 0
     frequency_penalty: 0
-    logit_bias: ""
     question: ${inputs.question}
     answer: ${inputs.answer}
   provider: AzureOpenAI
@@ -88,14 +88,12 @@ nodes:
     type: code
     path: gpt_similarity_prompt.jinja2
   inputs:
-    deployment_name: gpt-4
+    deployment_name: gpt-3
     temperature: 0
     top_p: 1
-    stop: ""
     max_tokens: 1
     presence_penalty: 0
     frequency_penalty: 0
-    logit_bias: ""
     answer: ${inputs.answer}
     ground_truth: ${inputs.ground_truth}
     question: ${inputs.question}
@@ -113,14 +111,12 @@ nodes:
     type: code
     path: gpt_relevance_prompt.jinja2
   inputs:
-    deployment_name: gpt-4
+    deployment_name: gpt-3
     temperature: 0
     top_p: 1
-    stop: ""
     max_tokens: 1
     presence_penalty: 0
     frequency_penalty: 0
-    logit_bias: ""
     answer: ${inputs.answer}
     context: ${inputs.context}
     question: ${inputs.question}
@@ -138,14 +134,12 @@ nodes:
     type: code
     path: gpt_fluency_prompt.jinja2
   inputs:
-    deployment_name: gpt-4
+    deployment_name: gpt-3
     temperature: 0
     top_p: 1
-    stop: ""
     max_tokens: 1
     presence_penalty: 0
     frequency_penalty: 0
-    logit_bias: ""
     answer: ${inputs.answer}
     question: ${inputs.question}
   provider: AzureOpenAI
@@ -174,14 +168,12 @@ nodes:
     type: code
     path: gpt_groundedness_prompt.jinja2
   inputs:
-    deployment_name: gpt-4
+    deployment_name: gpt-3
     temperature: 0
     top_p: 1
-    stop: ""
     max_tokens: 1
     presence_penalty: 0
     frequency_penalty: 0
-    logit_bias: ""
     answer: ${inputs.answer}
     context: ${inputs.context}
   provider: AzureOpenAI
@@ -260,6 +252,3 @@ nodes:
     question: ${inputs.question}
     selected_metrics: ${select_metrics.output}
   use_variants: false
-node_variants: {}
-environment:
-  python_requirements_txt: requirements.txt

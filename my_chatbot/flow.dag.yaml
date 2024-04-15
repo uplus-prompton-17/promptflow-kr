@@ -1,0 +1,25 @@
+$schema: https://azuremlschemas.azureedge.net/promptflow/latest/Flow.schema.json
+environment:
+  python_requirements_txt: requirements.txt
+inputs:
+  chat_history:
+    type: list
+    is_chat_history: true
+    default: []
+  question:
+    type: string
+    is_chat_input: true
+    default: 엘지유플러스의 티오더 고객 정책 설명 방법?
+outputs:
+  output:
+    type: string
+    reference: ${python_node_7ser.output}
+    is_chat_output: true
+nodes:
+- name: python_node_7ser
+  type: python
+  source:
+    type: code
+    path: python_node_7ser.py
+  inputs:
+    input1: ${inputs.question}
