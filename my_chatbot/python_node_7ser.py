@@ -20,7 +20,7 @@ from openai import AzureOpenAI
 def my_python_tool(input1: str) -> str:
     df=pd.read_csv(os.path.join(os.getcwd(),'sample_data.csv')) # This assumes that you have placed the bill_sum_data.csv in the same directory you are running Jupyter Notebooks
     # return 'hello ' + input1
-    df_bills = df[['index','product', 'question', 'answer', 'question_type']]
+    df_bills = df[['id','product', 'question', 'answer', 'question_type']]
     df_bills
     
 
@@ -86,6 +86,6 @@ def my_python_tool(input1: str) -> str:
     res = search_docs(df_bills, input1, top_n=4)
 
     
-    # print(res['question'])
+    return res['question'].to_json(orient='records', force_ascii=False)
     # return res.to_json(orient='records', force_ascii=False)
-    return 'csv 데이터 변환이 완료되었습니다.'
+    # return 'csv 데이터 변환이 완료되었습니다.'

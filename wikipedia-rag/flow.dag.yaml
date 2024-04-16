@@ -4,11 +4,11 @@ environment:
 inputs:
   question:
     type: string
-    default: 4월에 대해서 간략하게 요약해줘.
+    default: LG유플러스 고객정책이 어떻게 돼?
 outputs:
   output:
     type: string
-    reference: ${summary_llm.output}
+    reference: ${post_processing.output}
 nodes:
 - name: Embedding_Q
   type: python
@@ -16,16 +16,20 @@ nodes:
     type: package
     tool: promptflow.tools.embedding.embedding
   inputs:
-    connection: aoai_sweden
+    connection: open_ai_connection
     input: ${inputs.question}
+    deployment_name: text-embedding-ada-002
 - name: wikipedia_ai_search
   type: python
   source:
     type: package
     tool: promptflow_vectordb.tool.vector_db_lookup.VectorDBLookup.search
   inputs:
-    connection: pt-ai-search
+    connection: ai_search
     vector: ${Embedding_Q.output}
+    index_name: vocqa-index
+    vector_field: ada_v2
+    text_field: question
 - name: post_processing
   type: python
   source:
@@ -44,5 +48,5 @@ nodes:
       type: text
     question: ${inputs.question}
     search_results: ${post_processing.output}
-  connection: aoai_sweden
+  connection: open_ai_connection
   api: chat
