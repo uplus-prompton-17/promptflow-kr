@@ -20,8 +20,9 @@ from openai import AzureOpenAI
 def my_python_tool(input1: str) -> str:
     df=pd.read_csv(os.path.join(os.getcwd(),'sample_data.csv')) # This assumes that you have placed the bill_sum_data.csv in the same directory you are running Jupyter Notebooks
     # return 'hello ' + input1
-    df_bills = df[['상품명', '질문내용', '답변내용', '문제유형']]
+    df_bills = df[['product', 'question', 'answer', 'question_type']]
     df_bills
+    
 
     pd.options.mode.chained_assignment = None #https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#evaluation-order-matters
 
@@ -37,15 +38,15 @@ def my_python_tool(input1: str) -> str:
 
         return s
 
-    df_bills['질문내용']= df_bills["질문내용"].apply(lambda x : normalize_text(x))
+    df_bills['question']= df_bills["question"].apply(lambda x : normalize_text(x))
 
     tokenizer = tiktoken.get_encoding("cl100k_base")
-    df_bills['n_tokens'] = df_bills["질문내용"].apply(lambda x: len(tokenizer.encode(x)))
+    df_bills['n_tokens'] = df_bills["question"].apply(lambda x: len(tokenizer.encode(x)))
     df_bills = df_bills[df_bills.n_tokens<8192]
     len(df_bills)
 
     # 샘플 질문 내용
-    sample_encode = tokenizer.encode(df_bills.질문내용[0]) 
+    sample_encode = tokenizer.encode(df_bills.question[0]) 
     decode = tokenizer.decode_tokens_bytes(sample_encode)
 
     client = AzureOpenAI(
@@ -57,7 +58,9 @@ def my_python_tool(input1: str) -> str:
     def generate_embeddings(text, model="text-embedding-ada-002"): # model = "deployment_name"
         return client.embeddings.create(input = [text], model=model).data[0].embedding
 
-    df_bills['ada_v2'] = df_bills["질문내용"].apply(lambda x : generate_embeddings (x, model = 'text-embedding-ada-002')) # model should be set to the deployment name you chose when you deployed the text-embedding-ada-002 (Version 2) model
+    df_bills['ada_v2'] = df_bills["question"].apply(lambda x : generate_embeddings (x, model = 'text-embedding-ada-002')) # model should be set to the deployment name you chose when you deployed the text-embedding-ada-002 (Version 2) model
+
+    df_bills.to_csv('voc_sample.csv', index=False, encoding='utf-8-sig')
 
     def cosine_similarity(a, b):
         return np.dot(a, b) / (np.linalg.norm(a) * np.linalg.norm(b))
@@ -83,6 +86,6 @@ def my_python_tool(input1: str) -> str:
     res = search_docs(df_bills, input1, top_n=4)
 
     
-    print(res['질문내용'])
+    print(res['question'])
     return res.to_json(orient='records', force_ascii=False)
     # return '' + df
